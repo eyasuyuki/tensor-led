@@ -51,6 +51,9 @@ model=models.Sequential()
 model.add(Dense(64, activation='relu', input_dim=X_train.shape[1]))
 model.add(Dense(10, activation='softmax'))
 
+json_text=model.to_json()
+open("train.json","w").write(json_text)
+
 model.compile(optimizer='rmsprop',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -60,5 +63,10 @@ model.fit(X_train,Y_train,
           epochs=12,
           verbose=1)
 
-score=model.evaluate(X_test,Y_test)
+
+
+model.save_weights("train.hdf5")
+
+score=model.evaluate(X_test,Y_test,verbose=1)
 print(score)
+
