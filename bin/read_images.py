@@ -23,9 +23,10 @@ for d in dirs:
     dp = d.split("/")
     fs=os.listdir(d)
     for f in fs:
-        tmp_img=load_img(d+"/"+f, target_size=(64,64))
+        tmp_img=load_img(d+"/"+f, grayscale=True, target_size=(64,64))
         tmp_img_array=img_to_array(tmp_img)
         tmp_img_array/=255
+        print(f"{tmp_img_array.shape}")
         X_train.append(tmp_img_array)
         Y_train.append(int(dp[2]))
         if f in test_files:
@@ -36,8 +37,8 @@ for d in dirs:
 
 X_train=np.asarray(X_train)
 X_test=np.asarray(X_test)
-X_train=X_train.reshape(112, 12288)
-X_test=X_test.reshape(12, 12288)
+X_train=X_train.reshape(112, 4096)
+X_test=X_test.reshape(12, 4096)
 
 np.savez("./led-dataset.npz",x_train=X_train,y_train=Y_train,x_test=X_test,y_test=Y_test)
 
@@ -62,8 +63,6 @@ model.fit(X_train,Y_train,
           batch_size=100,
           epochs=12,
           verbose=1)
-
-
 
 model.save_weights("train.hdf5")
 
