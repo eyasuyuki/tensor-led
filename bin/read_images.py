@@ -1,6 +1,6 @@
 import sys
 from keras.preprocessing.image import array_to_img,img_to_array,load_img
-from keras.layers import Activation, Dense, Flatten
+from keras.layers import Activation, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 from keras import layers,models
 from keras import optimizers
 from keras.utils import np_utils
@@ -37,8 +37,8 @@ for d in dirs:
 
 X_train=np.asarray(X_train)
 X_test=np.asarray(X_test)
-X_train=X_train.reshape(112, 4096)
-X_test=X_test.reshape(12, 4096)
+#X_train=X_train.reshape(112, 4096) # use Conv2D
+#X_test=X_test.reshape(12, 4096) # use Conv2D
 
 np.savez("./led-dataset.npz",x_train=X_train,y_train=Y_train,x_test=X_test,y_test=Y_test)
 
@@ -49,7 +49,13 @@ Y_train=np_utils.to_categorical(Y_train,nb_classes)
 Y_test=np_utils.to_categorical(Y_test,nb_classes)
 
 model=models.Sequential()
-model.add(Dense(64, activation='relu', input_dim=X_train.shape[1]))
+model.add(Conv2D(filters=64, kernel_size=(5, 5), strides=(1, 1), input_shape=(64, 64, 1)))
+model.add(Conv2D(filters=64, kernel_size=(5, 5), strides=(1, 1)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+model.add(Flatten())
+model.add(Dropout(0.5))
+#model.add(Dense(64, activation='relu', input_dim=X_train.shape[1])) # use Conv2D
 model.add(Dense(10, activation='softmax'))
 
 json_text=model.to_json()
@@ -68,4 +74,3 @@ model.save_weights("train.hdf5")
 
 score=model.evaluate(X_test,Y_test,verbose=1)
 print(score)
-
