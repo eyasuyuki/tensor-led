@@ -1,11 +1,16 @@
+
 import datetime
 import itertools
-
+from keras import models
 from imutils import contours
 import cv2
 import numpy as np
 
 # from https://github.com/eyasuyuki/opencv-python-example
+from keras.datasets import mnist
+from keras.engine.saving import model_from_json
+from keras.optimizers import Adam
+
 
 def gray(img):
     grayed = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -77,35 +82,14 @@ def closing(img):
     return dilate, erode
 
 
-def read_digit(img):
+def read_digit(model, img):
     ret, th = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     (rh, rw) = th.shape
     aspect = rh / rw
     if aspect > 2:
         return "1"
-    # https://www.pyimagesearch.com/2017/02/13/recognizing-digits-with-opencv-and-python/
-    (dw, dh) = (int(rw * 0.25), int(rh * 0.15))
-    dhc = int(rh * 0.05)
-    segments = [
-        ((0, 0), (rw, dh)),  # top
-        ((0, 0), (dw, rh // 2)),  # top-left
-        ((rw - dw, 0), (rw, rh // 2)),  # top-right
-        ((0, (rh // 2) - dhc), (rw, (rh // 2) + dhc)),  # center
-        ((0, rh // 2), (dw, rh)),  # bottom-left
-        ((rw - dw, rh // 2), (rw, rh)),  # bottom-right
-        ((0, rh - dh), (rw, rh))  # bottom
-    ]
-    on = [0] * len(segments)
-    for (i, ((ax, ay), (bx, by))) in enumerate(segments):
-        seg = th[ay:by, ax:bx]
-        cv2.imwrite(f"seg{i}.jpg", seg)
-        total = cv2.countNonZero(seg)
-        area = (bx - ax) * (by - ay)
-        print(f"i={i}, total={total}, area={area}, total/area={total/float(area)}")
-        if total / float(area) > 0.35:
-            on[i] = 1
-    digit = DIGITS_LOOKUP[tuple(on)]
-    return digit
+    # TODO
+    return ""
 
 # load image
 image = cv2.imread("./images/example.jpg")
@@ -175,6 +159,15 @@ for p in pairs:
 
 print(len(words))
 
+# read trained keras model
+
+f = open("./train.json")
+json_text = f.read()
+model = model_from_json(json_text)
+model.summary()
+model.compile(loss='categorical_crossentropy', optimizer=Adam(lr=0.001, beta_1=0.5), metrics=['accuracy'])
+model.load_weight("./train.hdf5")
+
 # print words
 textbox = image.copy()
 text = []
@@ -182,7 +175,7 @@ for i, w in enumerate(words):
     for c in w:
         (x, y, w, h) = cv2.boundingRect(c)
         roi = contrast[y:y + h, x:x + w]  # clip numeric segment
-        tx = read_digit(roi)  # extract text segment
+        tx = read_digit(model, roi)  # extract text segment
         if len(tx) > 0:
             text.append(tx)
         textbox = cv2.rectangle(textbox, (x, y), (x + w, y + h), (0, 255, 0), 2)

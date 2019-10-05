@@ -54,16 +54,16 @@ for d in dirs:
             m = m+1
         n = n+1
 
-X_train=np.asarray(X_train)
-X_test=np.asarray(X_test)
+X_train = np.asarray(X_train)
+X_test = np.asarray(X_test)
 
-np.savez("./led-dataset.npz",x_train=X_train,y_train=Y_train,x_test=X_test,y_test=Y_test)
+np.savez("./led-dataset.npz", x_train=X_train, y_train=Y_train, x_test=X_test, y_test=Y_test)
 
 categories=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 nb_classes = len(categories)
 
-Y_train = np_utils.to_categorical(Y_train,nb_classes)
-Y_test = np_utils.to_categorical(Y_test,nb_classes)
+Y_train = np_utils.to_categorical(Y_train, nb_classes)
+Y_test = np_utils.to_categorical(Y_test, nb_classes)
 
 model = models.Sequential()
 model.add(Conv2D(filters=64, kernel_size=(5, 5), strides=(1, 1), input_shape=(64, 64, 1)))
@@ -88,5 +88,5 @@ model.fit(X_train,Y_train,
 
 model.save_weights("train.hdf5")
 
-score = model.evaluate(X_test,Y_test,verbose=1)
+score = model.evaluate(X_test, Y_test, verbose=1)
 print(score)
