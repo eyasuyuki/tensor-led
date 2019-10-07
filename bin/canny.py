@@ -81,16 +81,6 @@ def closing(img):
 
     return dilate, erode
 
-
-def read_digit(model, img):
-    ret, th = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    (rh, rw) = th.shape
-    aspect = rh / rw
-    if aspect > 2:
-        return "1"
-    # TODO
-    return ""
-
 # load image
 image = cv2.imread("./images/example.jpg")
 
@@ -100,7 +90,6 @@ image = cv2.imread("./images/example.jpg")
 
 # gray
 grayed = gray(image)
-
 # denoizing
 
 denoized = denoise(grayed)
@@ -172,14 +161,13 @@ model.load_weight("./train.hdf5")
 textbox = image.copy()
 text = []
 for i, w in enumerate(words):
+    line = []
     for c in w:
         (x, y, w, h) = cv2.boundingRect(c)
         roi = contrast[y:y + h, x:x + w]  # clip numeric segment
-        tx = read_digit(model, roi)  # extract text segment
-        if len(tx) > 0:
-            text.append(tx)
-        textbox = cv2.rectangle(textbox, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    text.append("\n")
+        ret, th = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        # TODO normalize to mnist
+        line = line.append(th)
+    scores = model.expect(line)
 
 cv2.imwrite("textbox.jpg", textbox)
-print("".join(text), end="")
