@@ -155,19 +155,19 @@ json_text = f.read()
 model = model_from_json(json_text)
 model.summary()
 model.compile(loss='categorical_crossentropy', optimizer=Adam(lr=0.001, beta_1=0.5), metrics=['accuracy'])
-model.load_weight("./train.hdf5")
+model.load_weights("./train.hdf5")
 
 # print words
 textbox = image.copy()
 text = []
 for i, w in enumerate(words):
-    line = []
+    ln = []
     for c in w:
         (x, y, w, h) = cv2.boundingRect(c)
         roi = contrast[y:y + h, x:x + w]  # clip numeric segment
         ret, th = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         # TODO normalize to mnist
-        line = line.append(th)
-    scores = model.expect(line)
+        ln.append(th)
+    scores = model.predict(ln)
 
 cv2.imwrite("textbox.jpg", textbox)

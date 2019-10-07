@@ -75,6 +75,7 @@ model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
 json_text = model.to_json()
+print(json_text)
 open("train.json", "w").write(json_text)
 
 model.compile(optimizer='rmsprop',
