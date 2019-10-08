@@ -1,6 +1,7 @@
-
 import datetime
 import itertools
+import math
+
 from keras import models
 from imutils import contours
 import cv2
@@ -80,6 +81,22 @@ def closing(img):
     cv2.imwrite("erode.jpg", erode)
 
     return dilate, erode
+
+
+def scale_box(img, width, height):
+    (h, w) = img.shape
+    aspect = h / w
+    scale = 0.0
+    if aspect > 1.0:
+        scale = height / h
+    else:
+        scale = width / w
+    scaled = cv2.resize(img, dsize=None, fx=scale, fy=scale)
+    (h2, w2) = scaled.shape
+    result = np.zeros((width, height, 3), np.uint8)
+    mat = np.float32([[1, 0, ((width - w2) / 2.0)], [0, 1, 0]])
+    return cv2.warpAffine(scaled, mat, (width, height), dst=result)
+
 
 # load image
 image = cv2.imread("./images/example.jpg")
@@ -162,12 +179,15 @@ textbox = image.copy()
 text = []
 for i, w in enumerate(words):
     ln = []
-    for c in w:
+    for j, c in enumerate(w):
         (x, y, w, h) = cv2.boundingRect(c)
         roi = contrast[y:y + h, x:x + w]  # clip numeric segment
         ret, th = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         # TODO normalize to mnist
+        th = scale_box(th, 64, 64)
+        cv2.imwrite(f"th{j}.jpg", th)  # DEBUG
         ln.append(th)
     scores = model.predict(ln)
+    print("scores: ", scores)
 
 cv2.imwrite("textbox.jpg", textbox)

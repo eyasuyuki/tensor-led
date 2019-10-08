@@ -42,7 +42,7 @@ for d in dirs:
     dp = d.split("/")
     fs = os.listdir(d)
     for f in fs:
-        tmp_img = load_img(d+"/"+f, grayscale=True, target_size=(64,64))
+        tmp_img = load_img(d+"/"+f, grayscale=True, target_size=(64, 64))
         tmp_img_array = img_to_array(tmp_img)
         tmp_img_array /= 255
         print(f"{tmp_img_array.shape}")
