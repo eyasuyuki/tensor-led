@@ -38,3 +38,21 @@ source ~/.py37env/bin/activate
 python ./bin/read_images.py
 ```
 
+# predict lcd image
+
+![LCD image](https://github.com/eyasuyuki/tensor-led/blob/develop/images/example.jpg?raw=true)
+
+```buildoutcfg
+source ~/.py37env/bin/activate
+python ./bin/canny.py
+```
+
+## result
+
+```buildoutcfg
+[[0. 1. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 1. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]]
+[[0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]]
+```
