@@ -94,7 +94,7 @@ def scale_box(img, width, height):
         scale = width / w
     scaled = cv2.resize(img, dsize=None, fx=scale, fy=scale)
     (h2, w2) = scaled.shape
-    result = np.zeros((width, height, 3), np.uint8)
+    result = np.zeros((width, height, 1), np.uint8)
     mat = np.float32([[1, 0, ((width - w2) / 2.0)], [0, 1, 0]])
     return cv2.warpAffine(scaled, mat, (width, height), dst=result)
 
@@ -187,10 +187,9 @@ for i, w in enumerate(words):
         # normalize to mnist
         th = scale_box(th, 64, 64)
         cv2.imwrite(f"th{j}.jpg", th)  # DEBUG
-        tmp_img_array = img_to_array(th)
-        tmp_img_array /= 255
-        ln.append(tmp_img_array)
-    scores = model.predict(ln)
-    print("scores: ", scores)
+        tmp_img = img_to_array(th)
+        ln.append(tmp_img)
+    score = model.predict(np.array(ln))
+    print(score)
 
 cv2.imwrite("textbox.jpg", textbox)
