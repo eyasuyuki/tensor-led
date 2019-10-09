@@ -11,6 +11,7 @@ import numpy as np
 from keras.datasets import mnist
 from keras.engine.saving import model_from_json
 from keras.optimizers import Adam
+from keras_preprocessing.image import img_to_array
 
 
 def gray(img):
@@ -183,10 +184,12 @@ for i, w in enumerate(words):
         (x, y, w, h) = cv2.boundingRect(c)
         roi = contrast[y:y + h, x:x + w]  # clip numeric segment
         ret, th = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-        # TODO normalize to mnist
+        # normalize to mnist
         th = scale_box(th, 64, 64)
         cv2.imwrite(f"th{j}.jpg", th)  # DEBUG
-        ln.append(th)
+        tmp_img_array = img_to_array(th)
+        tmp_img_array /= 255
+        ln.append(tmp_img_array)
     scores = model.predict(ln)
     print("scores: ", scores)
 
