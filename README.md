@@ -56,3 +56,7 @@ python ./bin/canny.py
 [[0. 0. 0. 0. 1. 0. 0. 0. 0. 0.]
  [0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]]
 ```
+
+# TODO
+
+- use LSTM model
