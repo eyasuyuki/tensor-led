@@ -190,6 +190,10 @@ for i, w in enumerate(words):
         tmp_img = img_to_array(th)
         ln.append(tmp_img)
     score = model.predict(np.array(ln))
-    print(score)
+    classes = model.predict_classes(np.array(ln))
+    proba = model.predict_proba(np.array(ln))
+    # print(score)
+    print(classes)
+    # print(proba)
 
 cv2.imwrite("textbox.jpg", textbox)
