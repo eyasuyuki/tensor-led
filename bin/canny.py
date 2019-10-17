@@ -1,6 +1,4 @@
-import datetime
 import itertools
-import math
 
 from keras import models
 from imutils import contours
