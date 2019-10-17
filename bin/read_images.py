@@ -1,4 +1,3 @@
-import sys
 from keras.preprocessing.image import img_to_array,load_img
 from keras.layers import Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 from keras import models
