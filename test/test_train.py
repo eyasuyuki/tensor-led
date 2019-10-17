@@ -1,8 +1,8 @@
 import unittest
 
-import cv2
 from keras.engine.saving import model_from_json
-from keras_preprocessing.image import load_img, img_to_array
+from keras.optimizers import Adam
+from keras_preprocessing.image import load_img, img_to_array, np
 
 test_files=["0/n0.png",
             "1/n1.png",
@@ -15,7 +15,7 @@ test_files=["0/n0.png",
             "7/n7.png",
             "7/n7b.png",
             "8/n8.png",
-            "8/n9.png"]
+            "9/n9.png"]
 
 
 class MyTestCase(unittest.TestCase):
@@ -36,7 +36,8 @@ class MyTestCase(unittest.TestCase):
             tmp_img_array /= 255
             test.append(tmp_img_array)
 
-        result = model.predict_classes(test)
+        result = model.predict_classes(np.array(test))
+        result = ''.join(map(lambda x: str(x), result))
         self.assertEqual(result, "012345667789")
         
 
