@@ -54,6 +54,12 @@ python ./bin/canny.py
 [7 9]
 ```
 
+# Test
+
+```buildoutcfg
+python ./test/test_train.py
+```
+
 # TODO
 
 - use LSTM model

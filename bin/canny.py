@@ -1,12 +1,10 @@
 import itertools
 
-from keras import models
 from imutils import contours
 import cv2
 import numpy as np
 
 # from https://github.com/eyasuyuki/opencv-python-example
-from keras.datasets import mnist
 from keras.engine.saving import model_from_json
 from keras.optimizers import Adam
 from keras_preprocessing.image import img_to_array

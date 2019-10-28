@@ -1,4 +1,3 @@
-import sys
 from keras.preprocessing.image import img_to_array,load_img
 from keras.layers import Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 from keras import models
@@ -87,7 +86,7 @@ model.fit(X_train, Y_train,
           epochs=12,
           verbose=1)
 
-model.save_weights("train.hdf5")
+model.save("train.hdf5")
 
 score = model.evaluate(X_test, Y_test, verbose=1)
 print(score)
